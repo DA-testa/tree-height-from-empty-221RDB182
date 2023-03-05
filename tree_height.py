@@ -2,8 +2,6 @@
 
 import sys
 import threading
-import numpy
-
 
 def compute_height(n, parents):
     tree = [[] for _ in range(n)]
@@ -41,9 +39,9 @@ def main():
         while 'a' in file_name:
             file_name = input("File name is not valid")
         try:
-            with open('folder/' + file_nme, 'r') as file:
+            with open('folder/' + file_name, 'r') as file:
                 n = int(file.readline())
-                parents = list(map(int, file,readline().split()))
+                parents = list(map(int, file.readline().split()))
         except:
             print("Could not read file")
             return
