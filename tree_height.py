@@ -1,40 +1,45 @@
+# python3
+
 import sys
 import threading
 
-def dfs(node, depth, parent, graph):
-    if parent[node] == -1:
-       depth[node] = 0
-    else:
-      depth[node] = depth[parent[node]] + 1
-    for child in graph[node]:
-    if child != parent[node]:
-        dfs(child, depth, parent, graph)
-def tree_height(n, parent):
-graph = defaultdict(list)
-for i in range(n):
-    if parent[i] != -1:
-        graph[parent[i]].append(i)
-        graph[i].append(parent[i])
-        
-  depth = [-1] * n
-for i in range(n):
-    if parent[i] == -1:
-        dfs(i, depth, parent, graph)
+def compute_height(n, parents):
+    tree = [[] for _ in range(n)]
+    root = 0
+    for i in range(n):
+        if parents[i] == -1:
+            root = i
+        else:
+            tree[parents[i]].append(i)
+    max_height = 0
+    queue = [root]
+    
+    while queue:
+        height = 0
+        level_size = len(queue)
+        for _ in range(level_size):
+            node = queue.pop(0)
+            children = tree[node]
+            for child in children:
+                queue.append(child)
+        max_height = height if height > max_height else max_height
+        height += 1
+    return max_height
 
-return max(depth) + 1
-  
-    def compute_height(n, parents):
-return tree_height(n, parents)
+    # input number of elements
+    # input values in one variable, separate with space, split these values in an array
 
 def main():
+    # implement input form keyboard and from files
     input_type = input("Enter F for file or K for keyboard")
     
     if input_type == 'F':
         file_name = input("File name?")
+    # let user input file name to use, don't allow file names with letter a
         while 'a' in file_name:
             file_name = input("File name is not valid")
         try:
-            with open(file_name, 'r') as file:
+            with open('folder/' + file_name, 'r') as file:
                 n = int(file.readline())
                 parents = list(map(int, file.readline().split()))
         except:
@@ -48,8 +53,14 @@ def main():
             print("Invalid input")
             return
 
-    print("Height of the tree:", (compute_height(n, parents))
+    height = compute_height(n, parents)
 
-sys.setrecursionlimit(10**7)
-threading.stack_size(2**27)
+    # call the function and output it's result
+    print("Height of the tree: ", height)
+
+# In Python, the default limit on recursion depth is rather low,
+# so raise it here for this problem. Note that to take advantage
+# of bigger stack, we have to launch the computation in a new thread.
+sys.setrecursionlimit(10**7)  # max depth of recursion
+threading.stack_size(2**27)   # new thread will get stack of such size
 threading.Thread(target=main).start()
