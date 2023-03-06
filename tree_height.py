@@ -1,28 +1,30 @@
 import sys
 import threading
 
-def compute_height(n, parents):
-    tree = [[] for _ in range(n)]
-    root = 0
-    for i in range(n):
-        if parents[i] == -1:
-            root = i
-        else:
-            tree[parents[i]].append(i)
-    max_height = 0
-    queue = [root]
-    
-    while queue:
-        height = 0
-        level_size = len(queue)
-        for _ in range(level_size):
-            node = queue.pop(0)
-            children = tree[node]
-            for child in children:
-                queue.append(child)
-        max_height = height if height > max_height else max_height
-        height += 1
-    return max_height
+def dfs(node, depth, parent, graph):
+    if parent[node] == -1:
+       depth[node] = 0
+    else:
+      depth[node] = depth[parent[node]] + 1
+    for child in graph[node]:
+    if child != parent[node]:
+        dfs(child, depth, parent, graph)
+def tree_height(n, parent):
+graph = defaultdict(list)
+for i in range(n):
+    if parent[i] != -1:
+        graph[parent[i]].append(i)
+        graph[i].append(parent[i])
+        
+  depth = [-1] * n
+for i in range(n):
+    if parent[i] == -1:
+        dfs(i, depth, parent, graph)
+
+return max(depth) + 1
+  
+    def compute_height(n, parents):
+return tree_height(n, parents)
 
 def main():
     input_type = input("Enter F for file or K for keyboard")
@@ -46,9 +48,7 @@ def main():
             print("Invalid input")
             return
 
-    height = compute_height(n, parents)
-
-    print("Height of the tree:", height)
+    print("Height of the tree:", (compute_height(n, parents))
 
 sys.setrecursionlimit(10**7)
 threading.stack_size(2**27)
